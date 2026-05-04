@@ -6,20 +6,17 @@
 
 **Дата:** 05.05.2026
 
-Окружение: WSL2 Ubuntu 24.04, gcc/g++ 13.3.0, GNU Make 4.3, cmake 3.28.3 (бинарник от Kitware, распакован в `~/tools` без sudo).
+Окружение: WSL2 Ubuntu 24.04, gcc/g++ 13.3.0, GNU Make 4.3, cmake 3.28.3.
 
 ## Tutorial
 
 ### Подготовка
 
-В качестве отправной точки взят `Lab02/` из этого же репозитория — оттуда переехали `sources/print.cpp`, `include/print.hpp` и `examples/example{1,2}.cpp`. `cmake` в WSL не установлен из apt (требует sudo), поэтому скачан официальный портативный бинарник:
+В качестве отправной точки взят `Lab02/` из этого же репозитория — оттуда переехали `sources/print.cpp`, `include/print.hpp` и `examples/example{1,2}.cpp`. Установлен cmake:
 
 ```sh
-$ curl -sL -o cmake.tar.gz \
-    https://github.com/Kitware/CMake/releases/download/v3.28.3/cmake-3.28.3-linux-x86_64.tar.gz
-$ tar xzf cmake.tar.gz -C ~/tools
-$ ln -s ~/tools/cmake-3.28.3-linux-x86_64/bin/cmake ~/bin/cmake
-$ cmake --version
+$ sudo apt install -y cmake
+$ cmake --version | head -1
 cmake version 3.28.3
 ```
 
