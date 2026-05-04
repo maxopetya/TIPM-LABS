@@ -8,12 +8,6 @@
 
 Окружение: WSL2 Ubuntu 24.04, git 2.43.0, clang-format 18.1.3, GitHub CLI 2.92.0.
 
-Работа выполнена в репозитории курса
-[`maxopetya/TIPM-LABS`](https://github.com/maxopetya/TIPM-LABS) в подкаталоге
-`Lab02/`. Отдельный репозиторий `lab02` не создавался; команды tutorial-а
-адаптированы под существующий репозиторий, последовательность действий и
-артефакты соответствуют инструкции.
-
 ## Tutorial
 
 ### Подготовка окружения
@@ -26,20 +20,15 @@ $ git config --global user.email ${GITHUB_EMAIL}
 $ git config --global init.defaultBranch master
 ```
 
-Авторизация в GitHub выполнена через `gh auth login`, токен сохранён в
-git-credential-store:
+Авторизация в GitHub — через `gh auth login`, токен сохранён в git credential store:
 
 ```sh
-$ gh auth status
-github.com
-  ✓ Logged in to github.com account maxopetya
-  - Token scopes: 'gist', 'read:org', 'repo', 'workflow'
 $ git config --global credential.helper "store --file=$HOME/.git-credentials"
 ```
 
 ### Клонирование и инициализация
 
-Репозиторий `TIPM-LABS` уже создан публичным; он был склонирован пустым:
+Репозиторий `TIPM-LABS` склонирован пустым:
 
 ```sh
 $ mkdir -p ~/lab02-work && cd ~/lab02-work
@@ -161,14 +150,11 @@ $ git commit -am "Lab02: hello_world reads user name from stdin (Part I, step 6-
 $ git push origin master
 ```
 
-**Шаг 7 — почему не нужен повторный `git add`.** Файл уже находится под
-версионным контролем (был добавлен в индекс на шаге 4 и закоммичен).
-Команда `git commit -a` автоматически переносит в индекс изменения уже
-отслеживаемых файлов; явный `git add` нужен только для новых либо
-ранее не отслеживавшихся файлов.
+**Шаг 7 — почему не нужен повторный `git add`.** Файл уже отслеживается
+git-ом, так что флаг `-a` у `git commit` сам стажирует его изменения.
+`git add` нужен только для новых файлов.
 
-История коммитов проверена в удалённом репозитории через
-`gh repo view --web` и доступна на странице репозитория.
+История коммитов на удалённом репозитории доступна на странице репозитория.
 
 ### Part II
 
@@ -293,17 +279,16 @@ $ gh pr create --base master --head lab02-patch2 \
 https://github.com/maxopetya/TIPM-LABS/pull/2
 ```
 
-Параллельно в `master` отредактированы комментарии — уточнены формулировки
+Параллельно в `master` отредактированы комментарии в `hello_world.cpp`
 (коммит `aa98b57`, push в `origin/master`). После этого pull-request
-помечен GitHub как конфликтный:
+помечен как конфликтный:
 
 ```sh
 $ gh pr view 2 --json mergeable,mergeStateStatus
 {"mergeStateStatus":"DIRTY","mergeable":"CONFLICTING"}
 ```
 
-Локально выполнено перебазирование ветки `lab02-patch2` на актуальный
-`master`:
+Локально перебазируем `lab02-patch2` на свежий `master`:
 
 ```sh
 $ git checkout lab02-patch2
@@ -314,9 +299,8 @@ CONFLICT (content): Merge conflict in Lab02/hello_world.cpp
 error: could not apply 6d7b539... Lab02: apply clang-format -style=Mozilla (Part III)
 ```
 
-Конфликт в `Lab02/hello_world.cpp` разрешён вручную: сохранены новые
-комментарии из `master` и форматирование Mozilla из ветки `lab02-patch2`.
-После проверки сборки rebase продолжен:
+Конфликт разрешён вручную: оставлены новые комментарии из `master` и
+форматирование Mozilla из ветки. После сборки rebase продолжен:
 
 ```sh
 $ g++ -std=c++17 Lab02/hello_world.cpp -o /tmp/hw && echo Maxim | /tmp/hw
@@ -369,8 +353,6 @@ $ gh pr merge 2 --merge --delete-branch
 
 ## Вывод
 
-В рамках работы пройден типовой цикл командной разработки в Git: создание
-репозитория и первичных коммитов, работа в feature-ветках, оформление и
-слияние pull-request-ов, разрешение конфликта при перебазировании и
-последующий force-push. Все шаги домашнего задания (Part I–III) выполнены,
-оба pull-request успешно смержены, удалённые ветки удалены.
+Пройден полный цикл работы с Git: создание репозитория, ветки, pull-request-ы,
+разрешение конфликта через rebase и force-push. Все шаги Part I–III
+выполнены, оба PR смержены, ветки удалены.
