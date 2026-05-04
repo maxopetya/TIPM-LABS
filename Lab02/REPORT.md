@@ -43,7 +43,7 @@ $ git checkout -b master
 
 ```sh
 $ git add README.md
-$ git commit -m "init: TIPM-LABS root README"
+$ git commit -m "init"
 $ git push -u origin master
 ```
 
@@ -93,7 +93,7 @@ void print(const std::string& text, std::ofstream& out)
 
 ```sh
 $ git add Lab02/
-$ git commit -m "Lab02: tutorial structure (sources, include, examples)"
+$ git commit -m "tutorial"
 $ git push origin master
 ```
 
@@ -116,7 +116,7 @@ int main() {
 
 ```sh
 $ git add Lab02/hello_world.cpp
-$ git commit -m "Lab02: added hello_world (homework Part I, step 3-5)"
+$ git commit -m "hello world"
 ```
 
 Затем код изменён так, чтобы имя пользователя считывалось из стандартного
@@ -146,7 +146,7 @@ Enter your name: Hello world from Maxim
 Коммит и push:
 
 ```sh
-$ git commit -am "Lab02: hello_world reads user name from stdin (Part I, step 6-7)"
+$ git commit -am "hello world v2"
 $ git push origin master
 ```
 
@@ -182,7 +182,7 @@ int main() {
 ```
 
 ```sh
-$ git commit -am "Lab02: drop using-namespace-std (Part II)"
+$ git commit -am "patch1"
 $ git push -u origin lab02-patch1
 ```
 
@@ -198,7 +198,7 @@ https://github.com/maxopetya/TIPM-LABS/pull/1
 В ту же ветку добавлены комментарии в исходный код, ещё один коммит и push:
 
 ```sh
-$ git commit -am "Lab02: add inline comments (Part II, step 6-7)"
+$ git commit -am "комментарии"
 $ git push origin lab02-patch1
 ```
 
@@ -206,8 +206,8 @@ $ git push origin lab02-patch1
 
 ```sh
 $ gh pr view 1 --json commits --jq '.commits[].messageHeadline'
-Lab02: drop using-namespace-std (Part II)
-Lab02: add inline comments (Part II, step 6-7)
+patch1
+комментарии
 ```
 
 Слияние pull-request и удаление удалённой ветки:
@@ -221,23 +221,23 @@ $ gh pr merge 1 --merge --delete-branch
 ```sh
 $ git checkout master
 $ git pull origin master
-Updating e9f21f9..ea74cb4
+Updating ee8f826..4be016f
 Fast-forward
  Lab02/hello_world.cpp | 12 +++++++-----
 $ git fetch --prune
 $ git branch -d lab02-patch1
-Deleted branch lab02-patch1 (was 20f5452).
+Deleted branch lab02-patch1 (was 83a36b4).
 ```
 
 Фрагмент истории `master` после слияния:
 
 ```
-*   ea74cb4 Merge pull request #1 from maxopetya/lab02-patch1
+*   4be016f Merge pull request #1 from maxopetya/lab02-patch1
 |\
-| * 20f5452 Lab02: add inline comments (Part II, step 6-7)
-| * 268f790 Lab02: drop using-namespace-std (Part II)
+| * 83a36b4 комментарии
+| * fe90f73 patch1
 |/
-* e9f21f9 Lab02: hello_world reads user name from stdin (Part I, step 6-7)
+* ee8f826 hello world v2
 ```
 
 ### Part III
@@ -272,7 +272,7 @@ main()
 ```
 
 ```sh
-$ git commit -am "Lab02: apply clang-format -style=Mozilla (Part III)"
+$ git commit -am "clang-format"
 $ git push -u origin lab02-patch2
 $ gh pr create --base master --head lab02-patch2 \
       --title "Lab02 patch2: apply clang-format -style=Mozilla" --body "..."
@@ -280,7 +280,7 @@ https://github.com/maxopetya/TIPM-LABS/pull/2
 ```
 
 Параллельно в `master` отредактированы комментарии в `hello_world.cpp`
-(коммит `aa98b57`, push в `origin/master`). После этого pull-request
+(коммит `6664f9c`, push в `origin/master`). После этого pull-request
 помечен как конфликтный:
 
 ```sh
@@ -296,7 +296,7 @@ $ git fetch origin
 $ git rebase origin/master
 Auto-merging Lab02/hello_world.cpp
 CONFLICT (content): Merge conflict in Lab02/hello_world.cpp
-error: could not apply 6d7b539... Lab02: apply clang-format -style=Mozilla (Part III)
+error: could not apply 0a4de25... clang-format
 ```
 
 Конфликт разрешён вручную: оставлены новые комментарии из `master` и
@@ -307,7 +307,7 @@ $ g++ -std=c++17 Lab02/hello_world.cpp -o /tmp/hw && echo Maxim | /tmp/hw
 Enter your name: Hello world from Maxim
 $ git add Lab02/hello_world.cpp
 $ GIT_EDITOR=true git rebase --continue
-[detached HEAD 1b1c2b0] Lab02: apply clang-format -style=Mozilla (Part III)
+[detached HEAD 0a4de25] clang-format
 Successfully rebased and updated refs/heads/lab02-patch2.
 ```
 
@@ -315,7 +315,7 @@ Force-push в удалённую ветку:
 
 ```sh
 $ git push --force-with-lease origin lab02-patch2
- + 6d7b539...1b1c2b0 lab02-patch2 -> lab02-patch2 (forced update)
+ + 6d7b539...0a4de25 lab02-patch2 -> lab02-patch2 (forced update)
 ```
 
 После force-push pull-request стал чистым и был смержен:
@@ -329,20 +329,20 @@ $ gh pr merge 2 --merge --delete-branch
 Финальная история `master`:
 
 ```
-*   4e58bc4 Merge pull request #2 from maxopetya/lab02-patch2
+*   cdfb075 Merge pull request #2 from maxopetya/lab02-patch2
 |\
-| * 1b1c2b0 Lab02: apply clang-format -style=Mozilla (Part III)
+| * 0a4de25 clang-format
 |/
-* aa98b57 Lab02: refine comments in hello_world (Part III, conflict trigger)
-*   ea74cb4 Merge pull request #1 from maxopetya/lab02-patch1
+* 6664f9c комментарии 2.0
+*   4be016f Merge pull request #1 from maxopetya/lab02-patch1
 |\
-| * 20f5452 Lab02: add inline comments (Part II, step 6-7)
-| * 268f790 Lab02: drop using-namespace-std (Part II)
+| * 83a36b4 комментарии
+| * fe90f73 patch1
 |/
-* e9f21f9 Lab02: hello_world reads user name from stdin (Part I, step 6-7)
-* 9f24329 Lab02: added hello_world (homework Part I, step 3-5)
-* 9960e77 Lab02: tutorial structure (sources, include, examples)
-* eaf3139 init: TIPM-LABS root README
+* ee8f826 hello world v2
+* 2868b4d hello world
+* 9007616 tutorial
+* dafdb30 init
 ```
 
 ## Ссылки
