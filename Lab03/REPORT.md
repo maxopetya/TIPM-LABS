@@ -12,7 +12,7 @@
 
 ### Подготовка
 
-В качестве отправной точки взят `Lab02/` из этого же репозитория — оттуда переехали `sources/print.cpp`, `include/print.hpp` и `examples/example{1,2}.cpp`. Установлен cmake:
+В качестве отправной точки взят `Lab02/` из этого же репозитория — оттуда перенесены `sources/print.cpp`, `include/print.hpp` и `examples/example{1,2}.cpp`. Установлен cmake:
 
 ```sh
 $ sudo apt install -y cmake
@@ -41,11 +41,11 @@ $ cat log.txt && echo
 hello
 ```
 
-После проверки артефакты удалены (`rm -rf *.o *.a example1 example2 log.txt`).
+После проверки промежуточные файлы удалены (`rm -rf *.o *.a example1 example2 log.txt`).
 
-### Сборка через CMake (инкрементально)
+### Сборка через CMake
 
-`CMakeLists.txt` собирался по шагам, как в инструкции. Финальная промежуточная версия:
+`CMakeLists.txt` собирался по шагам в соответствии с инструкцией. Промежуточная версия:
 
 ```cmake
 cmake_minimum_required(VERSION 3.4)
@@ -82,11 +82,11 @@ $ _build/example2 && cat log.txt && echo
 hello
 ```
 
-`cmake 3.28.3` ругается на `cmake_minimum_required(VERSION 3.4)` (deprecated <3.5), но сборку не валит — формулировка взята из инструкции, оставлена как есть.
+При конфигурации cmake 3.28 выводит предупреждение о том, что `cmake_minimum_required(VERSION 3.4)` соответствует устаревшей политике совместимости (deprecated <3.5). Сборка завершается успешно. Значение `3.4` сохранено в соответствии с инструкцией.
 
-### Финальный CMakeLists.txt с install
+### Финальный CMakeLists.txt с установкой
 
-Версия из апстрима `tp-labs/lab03` подменяет ручной — добавляет опцию `BUILD_EXAMPLES`, `target_include_directories` с генератор-выражениями, install-таргеты для библиотеки, заголовков и cmake-конфига. Конфигурация с префиксом и установка:
+Версия из репозитория `tp-labs/lab03` заменяет промежуточный файл и добавляет: опцию `BUILD_EXAMPLES`, `target_include_directories` с генератор-выражениями, install-правила для библиотеки, заголовков и cmake-конфига.
 
 ```sh
 $ cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install
@@ -101,7 +101,7 @@ Install the project...
 -- Installing: .../_install/cmake/print-config-noconfig.cmake
 ```
 
-Содержимое `_install` (вместо `tree` использован `find`, т.к. `tree` в WSL не установлен):
+Содержимое каталога `_install`:
 
 ```
 _install/
@@ -116,7 +116,7 @@ _install/
 
 ## Homework
 
-Все три задания решены в одном проекте: к корневому `CMakeLists.txt` (из tutorial-а) добавляются `add_subdirectory(...)` для каждой новой компоненты. Иерархия зависимостей:
+Все три задания выполнены в составе одного проекта: к корневому `CMakeLists.txt` добавляются `add_subdirectory(...)` для каждой компоненты. Иерархия зависимостей:
 
 ```
 hello_world ──▶ formatter_ex ──▶ formatter
@@ -124,9 +124,9 @@ solver ─────▶ formatter_ex ──▶ formatter
        └────▶ solver_lib
 ```
 
-### Part I — formatter_lib
+### Задание 1 — formatter_lib
 
-Файлы `formatter_lib/formatter.{h,cpp}` положены в каталог. `CMakeLists.txt`:
+Файлы `formatter_lib/formatter.{h,cpp}` размещены в каталоге библиотеки. `CMakeLists.txt`:
 
 ```cmake
 cmake_minimum_required(VERSION 3.4)
@@ -140,11 +140,11 @@ add_library(formatter STATIC ${CMAKE_CURRENT_SOURCE_DIR}/formatter.cpp)
 target_include_directories(formatter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 ```
 
-`PUBLIC` у `target_include_directories` — чтобы потребители (formatter_ex) подхватывали заголовок без явного указания путей.
+Уровень `PUBLIC` у `target_include_directories` обеспечивает передачу include-директории зависимым целям (formatter_ex).
 
-### Part II — formatter_ex_lib
+### Задание 2 — formatter_ex_lib
 
-`formatter_ex_lib/formatter_ex.{h,cpp}` использует `formatter.h`. Линковка с `formatter` транзитивно прокидывает include-директорию:
+Библиотека `formatter_ex_lib/formatter_ex.{h,cpp}` использует заголовок `formatter.h`. Зависимость от `formatter` указывается через `target_link_libraries`, что также транзитивно подключает include-директорию.
 
 ```cmake
 cmake_minimum_required(VERSION 3.4)
@@ -160,7 +160,7 @@ target_include_directories(formatter_ex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(formatter_ex formatter)
 ```
 
-### Part III — hello_world и solver
+### Задание 3 — hello_world и solver
 
 `hello_world_application/CMakeLists.txt`:
 
@@ -169,7 +169,7 @@ add_executable(hello_world ${CMAKE_CURRENT_SOURCE_DIR}/hello_world.cpp)
 target_link_libraries(hello_world formatter_ex)
 ```
 
-`solver_lib` — обёртка над квадратным уравнением. Исходник из апстрима использует `std::sqrtf`, который в `<cmath>` gcc 13 / libstdc++ под именем `std::` не виден. Заменено на `std::sqrt(d)` (есть перегрузка `float` с C++98), также добавлен `#include <cmath>` (в апстриме его нет).
+`solver_lib` содержит реализацию решателя квадратного уравнения. Исходный текст из задания использует `std::sqrtf`, который в стандартной библиотеке gcc 13 / libstdc++ в пространстве имён `std` отсутствует. Функция заменена на `std::sqrt(d)` (имеет перегрузку для `float` начиная с C++98); также добавлен `#include <cmath>` (в исходном файле он отсутствует).
 
 ```cmake
 add_library(solver_lib STATIC ${CMAKE_CURRENT_SOURCE_DIR}/solver.cpp)
@@ -226,9 +226,9 @@ error: discriminant < 0
 -------------------------
 ```
 
-`x² - 3x + 2` корректно даёт `x1=1, x2=2`; `x² + 1` ловит ветку с отрицательным дискриминантом и через `std::logic_error` уходит в форматирование ошибки.
+Уравнение `x² - 3x + 2` даёт корни `x1 = 1`, `x2 = 2`. Для `x² + 1` дискриминант отрицательный, выбрасывается `std::logic_error` и сообщение об ошибке передаётся в форматирование.
 
-`cmake --build _build --target install` ставит только `print`-часть (для homework-таргетов install-правил в задании не требовалось):
+Команда `cmake --build _build --target install` устанавливает только цели из tutorial-части (для домашних заданий install-правил по условию задания не предусмотрено):
 
 ```
 _install/
@@ -244,24 +244,12 @@ _install/
     libprint.a
 ```
 
-## История коммитов
-
-```
-049fde8 equation
-bc6cde4 hello world
-212b8c0 solver
-d6f551d formatter_ex
-94c190e formatter
-87ccc42 tutorial
-231c5e0 init
-```
-
 ## Ссылки
 
 - Репозиторий: <https://github.com/maxopetya/TIPM-LABS>
-- Каталог лабы: <https://github.com/maxopetya/TIPM-LABS/tree/master/Lab03>
+- Каталог лабораторной работы: <https://github.com/maxopetya/TIPM-LABS/tree/master/Lab03>
 - Задание: <https://github.com/tp-labs/lab03>
 
 ## Вывод
 
-Освоен инкрементальный путь сборки: ручные `g++/ar` → плоский `CMakeLists.txt` → апстримный с install-правилами. По домашке поднята иерархия из двух статических библиотек (`formatter`, `formatter_ex`), вспомогательной `solver_lib` и двух исполняемых таргетов (`hello_world`, `solver`); линковка на нужные библиотеки разруливается через `target_link_libraries`, заголовки прокидываются `target_include_directories(... PUBLIC ...)`. Всё собирается одной командой `cmake --build _build` из корня `Lab03/`.
+Рассмотрены три способа сборки проекта: ручной (`g++` и `ar`), через простой `CMakeLists.txt` и через финальный вариант с install-правилами. В рамках домашнего задания построена иерархия из двух статических библиотек (`formatter`, `formatter_ex`), дополнительной библиотеки `solver_lib` и двух исполняемых файлов (`hello_world`, `solver`). Зависимости между целями описаны через `target_link_libraries`, передача include-директорий — через `target_include_directories(... PUBLIC ...)`. Полная сборка проекта выполняется одной командой `cmake --build _build` из корня `Lab03/`.
