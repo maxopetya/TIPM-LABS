@@ -1,0 +1,27 @@
+version: 1.0.{build}
+
+image: Visual Studio 2022
+
+platform:
+  - x64
+
+configuration:
+  - Release
+
+clone_folder: c:\projects\lab04
+
+install:
+  - cmake --version
+
+build: off
+
+build_script:
+  - cmd: cmake -H. -B_build -A x64 -DCMAKE_INSTALL_PREFIX=_install -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+  - cmd: cmake --build _build --config %CONFIGURATION%
+  - cmd: cmake --build _build --config %CONFIGURATION% --target install
+
+test: off
+
+artifacts:
+  - path: _install
+    name: lab04-install

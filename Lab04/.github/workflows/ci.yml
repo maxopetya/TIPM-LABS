@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - { name: gcc,   cc: gcc,   cxx: g++ }
+          - { name: clang, cc: clang, cxx: clang++ }
+    name: linux-${{ matrix.compiler.name }}
+    env:
+      CC: ${{ matrix.compiler.cc }}
+      CXX: ${{ matrix.compiler.cxx }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Print toolchain versions
+        run: |
+          cmake --version
+          ${CC} --version
+          ${CXX} --version
+
+      - name: Configure
+        run: cmake -H. -B_build -DCMAKE_INSTALL_PREFIX=_install -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build
+        run: cmake --build _build
+
+      - name: Install
+        run: cmake --build _build --target install
+
+      - name: Smoke test
+        run: |
+          ls _install
+          _build/hello_world_application/hello_world || true

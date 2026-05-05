@@ -8,3 +8,4 @@
 | 01 | Изучение Unix-утилит и сборка boost 1.69.0 ([отчёт](https://gist.github.com/maxopetya/1eaf44ae1999124c8121f08ca68ca237)) |
 | 02 | Изучение системы контроля версий Git ([Lab02](Lab02/)) |
 | 03 | Изучение систем автоматизации сборки проекта на примере CMake ([Lab03](Lab03/)) |
+| 04 | Непрерывная интеграция: GitHub Actions + AppVeyor ([Lab04](Lab04/), [репо](https://github.com/maxopetya/lab04), [отчёт](https://gist.github.com/maxopetya/3305b879f76bd7d34cc4091d04f02588)) |
