@@ -1,0 +1,14 @@
+*build*/
+*install*/
+*.swp
+.idea/
+*.gcda
+*.gcno
+*.gcov
+coverage.info
+coverage/
+artifacts/
+_CPack_Packages/
+*.tar.gz
+*.deb
+*.rpm

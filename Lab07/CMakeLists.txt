@@ -33,10 +33,6 @@ find_package(GTest CONFIG REQUIRED)
 hunter_add_package(mylog)
 find_package(mylog CONFIG REQUIRED)
 
-add_executable(demo ${CMAKE_CURRENT_SOURCE_DIR}/demo/main.cpp)
-target_link_libraries(demo mylog::mylog)
-install(TARGETS demo RUNTIME DESTINATION bin)
-
 add_library(print STATIC ${CMAKE_CURRENT_SOURCE_DIR}/sources/print.cpp)
 
 target_include_directories(print PUBLIC
@@ -64,6 +60,14 @@ install(TARGETS print
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include)
 install(EXPORT print-config DESTINATION cmake)
+
+add_executable(demo ${CMAKE_CURRENT_SOURCE_DIR}/demo/main.cpp)
+target_link_libraries(demo print)
+install(TARGETS demo RUNTIME DESTINATION bin)
+
+add_executable(mylog_app ${CMAKE_CURRENT_SOURCE_DIR}/mylog_app/main.cpp)
+target_link_libraries(mylog_app mylog::mylog)
+install(TARGETS mylog_app RUNTIME DESTINATION bin)
 
 add_subdirectory(formatter_lib)
 add_subdirectory(formatter_ex_lib)
