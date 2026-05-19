@@ -1,10 +1,17 @@
 cmake_minimum_required(VERSION 3.4)
 
+include("cmake/HunterGate.cmake")
+HunterGate(
+    URL "https://github.com/cpp-pm/hunter/archive/v0.23.251.tar.gz"
+    SHA1 "5659b15dc0884d4b03dbd95710e6a1fa0fc3258d"
+    LOCAL
+)
+
 if(POLICY CMP0079)
   cmake_policy(SET CMP0079 NEW)
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(BUILD_EXAMPLES "Build examples" OFF)
@@ -19,6 +26,16 @@ set(PRINT_VERSION_TWEAK 0)
 set(PRINT_VERSION
   ${PRINT_VERSION_MAJOR}.${PRINT_VERSION_MINOR}.${PRINT_VERSION_PATCH}.${PRINT_VERSION_TWEAK})
 set(PRINT_VERSION_STRING "v${PRINT_VERSION}")
+
+hunter_add_package(GTest)
+find_package(GTest CONFIG REQUIRED)
+
+hunter_add_package(mylog)
+find_package(mylog CONFIG REQUIRED)
+
+add_executable(demo ${CMAKE_CURRENT_SOURCE_DIR}/demo/main.cpp)
+target_link_libraries(demo mylog::mylog)
+install(TARGETS demo RUNTIME DESTINATION bin)
 
 add_library(print STATIC ${CMAKE_CURRENT_SOURCE_DIR}/sources/print.cpp)
 
@@ -64,15 +81,9 @@ endif()
 
 if(BUILD_TESTS)
   enable_testing()
-  add_subdirectory(third-party/gtest)
-  foreach(_gtarget gtest gtest_main gmock gmock_main)
-    if(TARGET ${_gtarget})
-      target_compile_options(${_gtarget} PRIVATE -Wno-error)
-    endif()
-  endforeach()
   file(GLOB ${PROJECT_NAME}_TEST_SOURCES tests/*.cpp)
   add_executable(check ${${PROJECT_NAME}_TEST_SOURCES})
-  target_link_libraries(check ${PROJECT_NAME} banking gmock_main)
+  target_link_libraries(check ${PROJECT_NAME} banking GTest::gmock_main)
   add_test(NAME check COMMAND check)
 endif()
 
