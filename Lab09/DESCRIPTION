@@ -1,0 +1,3 @@
+Static C++ library for printing strings into ostream-compatible sinks.
+Provides print() overloads for std::ostream and std::ofstream targets.
+Used as a course example in TIPM lab series at Bauman MSTU.
