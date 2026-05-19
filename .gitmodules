@@ -1,3 +1,6 @@
 [submodule "Lab07/tools/polly"]
 	path = Lab07/tools/polly
 	url = https://github.com/ruslo/polly
+[submodule "Lab08/tools/polly"]
+	path = Lab08/tools/polly
+	url = https://github.com/ruslo/polly
