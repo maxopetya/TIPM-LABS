@@ -1,0 +1,6 @@
+_build/
+_install/
+logs/
+*.o
+*.a
+.hunter/
