@@ -12,3 +12,4 @@
 | 07 | Системы управления пакетами: Hunter ([Lab07](Lab07/)) |
 | 08 | Автоматизация развёртывания: Docker ([Lab08](Lab08/)) |
 | 09 | Сервисы хранения артефактов: GitHub Release ([Lab09](Lab09/), [репо](https://github.com/maxopetya/lab09), [отчёт](https://gist.github.com/maxopetya/35d91cf4d76200ee8e7dc86e4fadb29e)) |
+| 10 | Развёртывание виртуальной среды: Vagrant ([Lab10](Lab10/), [отчёт](https://gist.github.com/maxopetya/6b8c43a8913af4ce5ffb9997f9c2ebc7)) |
