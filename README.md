@@ -13,3 +13,5 @@
 | 08 | Автоматизация развёртывания: Docker ([Lab08](Lab08/)) |
 | 09 | Сервисы хранения артефактов: GitHub Release ([Lab09](Lab09/), [репо](https://github.com/maxopetya/lab09), [отчёт](https://gist.github.com/maxopetya/35d91cf4d76200ee8e7dc86e4fadb29e)) |
 | 10 | Развёртывание виртуальной среды: Vagrant ([Lab10](Lab10/), [отчёт](https://gist.github.com/maxopetya/6b8c43a8913af4ce5ffb9997f9c2ebc7)) |
+| 11 | Сеансы совместной разработки: ngrok ([Lab11](Lab11/)) |
+| 12 | Изучение текстового редактора Vim ([Lab12](Lab12/)) |
